@@ -1,1 +1,1 @@
-# binary-search-trees
+A simple javascript program building balanced BST.
