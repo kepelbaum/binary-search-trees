@@ -1,7 +1,7 @@
 import {sort} from './mergedsort.mjs';
 
 function Node (val) {
-    let value = val, left = '', right = '';
+    let value = val, left = null, right = null;
     let getValue = () => value;
     let getLeft = () => left;
     let getRight = () => right;
@@ -26,6 +26,124 @@ function Tree (mainarray) {
           prettyPrint(node.getLeft(), `${prefix}${isLeft ? "    " : "│   "}`, true);
         }
       };
+    const insert = (value) => {
+            let target = root;
+            let toggle = 0;
+            while (toggle === 0) {
+                if (value === target.getValue()) {
+                    toggle = 1;
+                }
+                else if (value < target.getValue()) {
+                    if (target.getLeft() !== null) {
+                        target = target.getLeft();
+                    }
+                    else {
+                        toggle = 1;
+                        let x = new Node(value);
+                        target.setLeft(x);
+                    }
+            }
+                else if (value > target.getValue()) {
+                    if (target.getRight() !== null) {
+                        target = target.getRight();
+                    }
+                    else {
+                        toggle = 1;
+                        let x = new Node(value);
+                        target.setRight(x);
+                    }
+                 }
+            }
+    } 
+    const deleteItem = (value) => {
+        let current = root;
+        let parent;
+        let rel;
+        let curtoggle = 0;
+        while (curtoggle === 0) {
+            if (current.getValue() === value) {
+                // console.log('One');
+                curtoggle = 1;
+            }
+            else if (current.getValue() > value) {
+                parent = current;
+                rel = 'left';
+                current = current.getLeft();
+                // console.log('Two');
+            }
+            else if (current.getValue() < value) {
+                parent = current;
+                rel = 'right';
+                current = current.getRight();
+                // console.log('Three');
+            }
+        }
+        if (current.getLeft() === null && current.getRight() === null) {
+            if (rel === 'left') {
+                parent.setLeft(null);
+                // console.log('Four');
+            }
+            else {
+                parent.setRight(null);
+                // console.log('Five');
+            }
+        }
+        else if (current.getRight() === null) {
+            let child = current.getLeft();
+            if (rel === 'left') {
+                parent.setLeft(child);
+                // console.log('Six');
+            }
+            else {
+                parent.setRight(child);
+                // console.log('Seven');
+            }
+        }
+        else if (current.getLeft() === null) {
+            let child = current.getRight();
+            if (rel === 'left') {
+                parent.setLeft(child);
+                // console.log('Eight');
+            }
+            else {
+                parent.setRight(child);
+                // console.log('Nine');
+            }
+        }
+        else {
+            let toggle = 0;
+            let child = current.getRight();
+            let cparent = current;
+            while (toggle === 0) {
+                if (child.getLeft() === null) {
+                    toggle = 1;
+                    // console.log('Ten');
+                }
+                else {
+                    cparent = child;
+                    child = child.getLeft();  
+                    // console.log('Eleven');  
+                }
+            }
+            if (rel === 'left') {
+                parent.setLeft(child);
+                // console.log('Twelve');
+            }
+            else if (rel === 'right') {
+                parent.setRight(child);
+                // console.log('Thirteen');
+            }
+            else {
+                root = child;
+            }
+            child.setLeft(current.getLeft());   
+            if (current.getRight().getValue() !== child.getValue()) {
+                cparent.setLeft(child.getRight());
+                child.setRight(current.getRight());    
+                // console.log('Fourteen');
+            }
+        }
+    }
     function buildTree(array) {
         if (array.length < 1) {
             return null;
@@ -41,7 +159,7 @@ function Tree (mainarray) {
             return x;
         }
     }
-    return {getRoot, prettyPrint};
+    return {getRoot, prettyPrint, insert, deleteItem};
 }
 
 
@@ -49,4 +167,7 @@ function Tree (mainarray) {
 let example = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 // let example = [3, 1, 6, 7, 1, 2, 2, 4, 8, 9, 5];
 let main = Tree(example);
+main.insert(10);
+main.prettyPrint(main.getRoot());   
+main.deleteItem(8);
 main.prettyPrint(main.getRoot());
