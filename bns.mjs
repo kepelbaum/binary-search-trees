@@ -159,15 +159,61 @@ function Tree (mainarray) {
             return x;
         }
     }
-    return {getRoot, prettyPrint, insert, deleteItem};
+
+    function find(value) {
+        let toggle = 0;
+        let current = root;
+        while (toggle === 0) {
+            if (current.getValue() === value) {
+                toggle = 1;
+            }
+            else if (current.getValue() > value) {
+                current = current.getLeft();
+            }
+            else if (current.getValue() < value) {
+                current = current.getRight();
+            }
+        }
+        return current;
+    }
+
+    function levelOrder (callback) {
+            let queue = [root];
+            let result = [];
+            while (queue.length > 0) {
+                if (typeof callback === 'function') {
+                     queue.forEach((ele) => callback(ele));
+                }
+                let oldqueue = queue.slice();
+                oldqueue.forEach((ele) => result.push(ele.getValue()));
+                queue = [];
+                oldqueue.forEach((ele) => {
+                if (ele.getLeft() !== null) {
+                    queue.push(ele.getLeft());
+                }
+                if (ele.getRight() !== null) {
+                    queue.push(ele.getRight());
+                }
+            });
+        };
+        if (typeof callback !== 'function') {
+            return result;
+        }
+    }
+    return {getRoot, prettyPrint, insert, deleteItem, find, levelOrder};
 }
 
-
+function seven(para) {
+    console.log('Value: ' + para.getValue());
+}
 
 let example = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 // let example = [3, 1, 6, 7, 1, 2, 2, 4, 8, 9, 5];
 let main = Tree(example);
 main.insert(10);
-main.prettyPrint(main.getRoot());   
+//   
 main.deleteItem(8);
 main.prettyPrint(main.getRoot());
+// console.log(main.find(9).getRight().getValue());
+main.levelOrder(seven);
+console.log(main.levelOrder());
