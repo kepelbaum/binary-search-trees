@@ -200,20 +200,217 @@ function Tree (mainarray) {
             return result;
         }
     }
-    return {getRoot, prettyPrint, insert, deleteItem, find, levelOrder};
+
+    function preOrder (callback) {
+        let queue = [root];
+            let result = [];
+            let current = root;
+            while (queue.length > 0) {
+                if (typeof callback === 'function') {
+                    callback(current);
+                }
+                queue.pop();
+                result.push(current.getValue());
+                if (current.getRight() !== null) {
+                    queue.push(current.getRight());
+                }
+                if (current.getLeft() !== null) {
+                    queue.push(current.getLeft());
+                }
+                if (queue.length > 0) {
+                current = queue[queue.length - 1];
+                }
+            };
+            if (typeof callback !== 'function') {
+                return result;
+            }
+        };
+
+
+        function inOrder (callback) {
+            let queue = [root];
+                let result = [];
+                let current = root;
+                while (queue.length > 0) {
+                    if (current.getLeft() !== null && result.includes(current.getLeft().getValue()) === false) {
+                        current = current.getLeft();
+                        queue.push(current);
+                    }
+                    else {
+                        if (typeof callback === 'function') {
+                            callback(current);
+                        }
+                    queue.pop();
+                    result.push(current.getValue());
+                    if (current.getRight() !== null) {
+                        current = current.getRight();
+                        queue.push(current);
+                    }
+                    else if (queue.length > 0) {
+                        current = queue[queue.length - 1];
+                        }
+                    }
+                };
+                if (typeof callback !== 'function') {
+                    return result;
+                }
+            };
+            
+            function postOrder (callback) {
+                let queue = [root];
+                    let result = [];
+                    let current = root;
+                    while (queue.length > 0) {
+                        if (current.getRight() !== null && result.includes(current.getRight().getValue()) === false) {
+                            current = current.getRight();
+                            queue.push(current);
+                        }
+                   
+                    else {
+                        if (typeof callback === 'function') {
+                            callback(current);
+                        }
+                    queue.pop();
+                    result.push(current.getValue());
+                    if (current.getLeft() !== null) {
+                        current = current.getLeft();
+                        queue.push(current);
+                    }
+                    else if (queue.length > 0) {
+                        current = queue[queue.length - 1];
+                        }
+                    }
+                };
+                    if (typeof callback !== 'function') {
+                        return result;
+                    }
+                };
+                function height(node) {
+                    if (node.getLeft() === null && node.getRight() === null) {
+                        return 0;
+                    }
+                    else if (node.getLeft() === null) {
+                        return 1 + height(node.getRight());
+                    }
+                    else if (node.getRight() === null) {
+                        return 1 + height(node.getLeft());
+                    }
+                    else {
+                        return 1 + Math.max(height(node.getLeft()), height(node.getRight()));
+                    }
+                }
+                function depth(node) {
+                    let current = root;
+                    let count = 0;
+                    let toggle = 0;
+                    while (toggle === 0) {
+                        if (current.getValue() === node.getValue()) {
+                            toggle = 1;
+                        }
+                        else if (current.getValue() > node.getValue()) {
+                            count++;
+                            current = current.getLeft();
+                        }
+                        else {
+                            count++;
+                            current = current.getRight();
+                        }
+                    }
+                    return count;
+                }
+                function isBalanced() {
+                let queue = [root];
+                let bool = true;
+                while (queue.length > 0) {
+                let oldqueue = queue.slice();
+                oldqueue.forEach((ele) => {
+                    let left = ele.getLeft() === null ? -1 : height(ele.getLeft());
+                    let right = ele.getRight() === null ? -1 : height(ele.getRight());
+                    if (left - right > 1 || right - left > 1) {
+                        bool = false;
+                        // console.log(ele.getValue(), left, right);
+                    }
+                });
+                if (bool === false) {
+                    return false;
+                }
+                queue = [];
+                oldqueue.forEach((ele) => {
+                if (ele.getLeft() !== null) {
+                    queue.push(ele.getLeft());
+                }
+                if (ele.getRight() !== null) {
+                    queue.push(ele.getRight());
+                }
+            });
+        };
+        return true;
+                }         
+    function rebalance() {
+        let list = inOrder();
+        root = buildTree(list);
+    }       
+        
+    return {getRoot, prettyPrint, insert, deleteItem, find, levelOrder, preOrder, inOrder, postOrder, isBalanced, rebalance};
 }
 
 function seven(para) {
     console.log('Value: ' + para.getValue());
 }
 
-let example = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
-// let example = [3, 1, 6, 7, 1, 2, 2, 4, 8, 9, 5];
+function random() {
+    let arr = [];
+    for (let i = 0; i < 12; i++) {
+        arr[i] = Math.round(Math.random() * 100);
+    }
+    return arr;
+}
+
+function srandom() {
+   return Math.round(Math.random() * 100);
+}
+
+// let example = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
+// // let example = [3, 1, 6, 7, 1, 2, 2, 4, 8, 9, 5];
+// let main = Tree(example);
+// main.insert(10);
+// main.deleteItem(8);
+// main.insert(6);
+// main.prettyPrint(main.getRoot());
+// // console.log(main.find(9).getRight().getValue());
+// // main.levelOrder(seven);
+// // console.log(main.levelOrder());
+// // main.preOrder(seven);
+// // console.log(main.preOrder());
+// // main.inOrder(seven);
+// // console.log(main.inOrder());
+// // main.postOrder(seven);
+// // console.log(main.postOrder());
+// console.log(main.isBalanced());
+// main.rebalance();
+// main.insert(6);
+// main.prettyPrint(main.getRoot());
+// console.log(main.isBalanced());
+let example = random();
 let main = Tree(example);
-main.insert(10);
-//   
-main.deleteItem(8);
 main.prettyPrint(main.getRoot());
-// console.log(main.find(9).getRight().getValue());
+console.log(main.isBalanced());
 main.levelOrder(seven);
-console.log(main.levelOrder());
+main.preOrder(seven);
+main.inOrder(seven);
+main.postOrder(seven);
+main.insert(srandom());
+main.insert(srandom());
+main.insert(srandom());
+main.insert(srandom());
+main.insert(srandom());
+main.insert(srandom());
+main.prettyPrint(main.getRoot());
+console.log(main.isBalanced());
+main.rebalance();
+main.prettyPrint(main.getRoot());
+console.log(main.isBalanced());
+main.levelOrder(seven);
+main.preOrder(seven);
+main.inOrder(seven);
+main.postOrder(seven);
